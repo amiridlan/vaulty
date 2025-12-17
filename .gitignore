@@ -7,10 +7,15 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node modules
 node_modules
 dist
 dist-ssr
 *.local
+
+# Tauri
+src-tauri/target
+src-tauri/Cargo.lock
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +27,80 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Database files (user data - IMPORTANT)
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Build artifacts
+*.exe
+*.msi
+*.dmg
+*.deb
+*.rpm
+*.AppImage
+*.app
+
+# Release packages
+releases/
+bundle/
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Testing
+coverage/
+*.coverage
+.nyc_output
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.sublime-project
+*.sublime-workspace
+
+# Mac
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# Rust
+**/*.rs.bk
+*.pdb
+
+# Lock files (keep package-lock.json, remove others if needed)
+# yarn.lock
+# pnpm-lock.yaml
+
+# Screenshots (optional - remove this line if you want to commit screenshots)
+screenshots/
+
+# Development reset script (optional - keep if needed for dev)
+scripts/reset-db.js
