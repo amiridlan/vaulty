@@ -174,11 +174,4 @@ function handleDeleteCancelled() {
   pendingDeleteOwner.value = null;
 }
 
-async function handleDeleteOwner(ownerId: number) {
-  try {
-    await store.deleteOwner(ownerId);
-  } catch (err: any) {
-    error.value = err.message || 'Failed to delete owner';
-  }
-}
 </script>

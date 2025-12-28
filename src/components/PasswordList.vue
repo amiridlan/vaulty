@@ -285,13 +285,6 @@ function handleDeleteCancelled() {
   pendingDeleteId.value = null;
 }
 
-async function handleDelete(entryId: number) {
-  try {
-    await store.deletePasswordEntry(entryId);
-  } catch (err: any) {
-    error.value = err.message || 'Failed to delete password';
-  }
-}
 
 function closeModal() {
   showAddModal.value = false;

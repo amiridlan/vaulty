@@ -192,7 +192,4 @@ function handleLogoutCancelled() {
   showLogoutConfirm.value = false;
 }
 
-function handleLogout() {
-  authStore.logout();
-}
 </script>
