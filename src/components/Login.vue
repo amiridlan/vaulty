@@ -1,20 +1,20 @@
 <template>
   <div class="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg shadow-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto">
+    <div class="bg-card rounded-lg shadow-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto border border-border">
       <div class="text-center mb-8">
-        <div class="inline-block p-3 bg-blue-100 rounded-full mb-4">
-          <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="inline-block p-3 bg-primary/10 rounded-full mb-4">
+          <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
           </svg>
         </div>
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Password Vault</h1>
-        <p class="text-gray-600">{{ isSetup ? 'Create Master Password' : 'Enter Master Password' }}</p>
+        <h1 class="text-3xl font-bold text-card-foreground mb-2">Password Vault</h1>
+        <p class="text-muted-foreground">{{ isSetup ? 'Create Master Password' : 'Enter Master Password' }}</p>
       </div>
 
       <form @submit.prevent="handleSubmit" class="space-y-6">
         <!-- Master Password -->
-        <div>
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div class="space-y-2">
+          <label class="text-sm font-medium text-card-foreground">
             Master Password
           </label>
           <div class="relative">
@@ -23,13 +23,13 @@
               :type="showPassword ? 'text' : 'password'"
               required
               @input="onPasswordInput"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10"
               :placeholder="isSetup ? 'Create a strong master password' : 'Enter your master password'"
             />
             <button
               type="button"
               @click="showPassword = !showPassword"
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <svg v-if="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -44,16 +44,16 @@
           <!-- Password Strength Indicator -->
           <div v-if="isSetup && password.length > 0" class="mt-2">
             <div class="flex items-center justify-between mb-1">
-              <span class="text-xs text-gray-600">Password Strength:</span>
+              <span class="text-xs text-muted-foreground">Password Strength:</span>
               <span class="text-xs font-semibold" :class="passwordStrength.color">
                 {{ passwordStrength.feedback }}
               </span>
             </div>
-            <div class="w-full bg-gray-200 rounded-full h-2">
+            <div class="w-full bg-muted rounded-full h-2">
               <div
                 class="h-2 rounded-full transition-all duration-300"
                 :class="{
-                  'bg-red-500': passwordStrength.score <= 2,
+                  'bg-destructive': passwordStrength.score <= 2,
                   'bg-orange-500': passwordStrength.score > 2 && passwordStrength.score <= 4,
                   'bg-yellow-500': passwordStrength.score > 4 && passwordStrength.score <= 5,
                   'bg-green-500': passwordStrength.score > 5
@@ -65,8 +65,8 @@
         </div>
 
         <!-- Confirm Password (Setup Only) -->
-        <div v-if="isSetup">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div v-if="isSetup" class="space-y-2">
+          <label class="text-sm font-medium text-card-foreground">
             Confirm Password
           </label>
           <div class="relative">
@@ -74,13 +74,13 @@
               v-model="confirmPassword"
               :type="showConfirmPassword ? 'text' : 'password'"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10"
               placeholder="Re-enter your master password"
             />
             <button
               type="button"
               @click="showConfirmPassword = !showConfirmPassword"
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <svg v-if="!showConfirmPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -94,14 +94,14 @@
         </div>
 
         <!-- Security Question (Setup Only) -->
-        <div v-if="isSetup">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div v-if="isSetup" class="space-y-2">
+          <label class="text-sm font-medium text-card-foreground">
             Security Question
           </label>
           <select
             v-model="selectedQuestionId"
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
             <option value="" disabled>Choose a security question</option>
             <option
@@ -115,32 +115,32 @@
         </div>
 
         <!-- Security Answer (Setup Only) -->
-        <div v-if="isSetup">
-          <label class="block text-sm font-medium text-gray-700 mb-2">
+        <div v-if="isSetup" class="space-y-2">
+          <label class="text-sm font-medium text-card-foreground">
             Security Answer
           </label>
           <input
             v-model="securityAnswer"
             type="text"
             required
-            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="Enter your answer (case-insensitive)"
           />
-          <p class="text-xs text-gray-500 mt-1">
+          <p class="text-xs text-muted-foreground mt-1">
             This will be used to reset your password if you forget it
           </p>
         </div>
 
         <!-- Error Message -->
-        <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-          {{ error }}
+        <div v-if="error" class="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+          <p class="text-sm text-destructive">{{ error }}</p>
         </div>
 
         <!-- Submit Button -->
         <button
           type="submit"
           :disabled="loading || (isSetup && passwordStrength.score < 5)"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
         >
           {{ loading ? 'Processing...' : (isSetup ? 'Create Vault' : 'Unlock Vault') }}
         </button>
@@ -150,7 +150,7 @@
           <button
             type="button"
             @click="showForgotPassword = true"
-            class="text-sm text-blue-600 hover:text-blue-700 transition duration-200"
+            class="text-sm text-primary hover:text-primary/90 transition-colors"
           >
             Forgot Password?
           </button>
@@ -159,15 +159,15 @@
 
       <!-- Setup Warnings -->
       <div v-if="isSetup" class="mt-6 space-y-4">
-        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <p class="text-sm text-yellow-800">
+        <div class="rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4">
+          <p class="text-sm text-yellow-800 dark:text-yellow-200">
             <strong>⚠️ Important:</strong> Your master password cannot be recovered. Make sure to remember it and your security answer!
           </p>
         </div>
         
-        <div class="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p class="text-sm text-blue-800 font-semibold mb-2">Password Requirements:</p>
-          <ul class="text-xs text-blue-700 space-y-1">
+        <div class="rounded-lg border border-primary/50 bg-primary/10 p-4">
+          <p class="text-sm font-semibold mb-2 text-card-foreground">Password Requirements:</p>
+          <ul class="text-xs text-muted-foreground space-y-1">
             <li>• At least 12 characters long</li>
             <li>• Contains uppercase and lowercase letters</li>
             <li>• Contains numbers</li>
