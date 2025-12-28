@@ -156,6 +156,19 @@ export class BrowserDatabase {
       return;
     }
 
+    // UPDATE master_password
+    if (queryLower.includes('update master_password')) {
+      const existing = await db.get('master_password', 1);
+      if (existing) {
+        await db.put('master_password', {
+          ...existing,
+          password_hash: params?.[0] as string,
+          salt: params?.[1] as string,
+        });
+      }
+      return;
+    }
+
     // UPDATE password_owners
     if (queryLower.includes('update password_owners')) {
       if (queryLower.includes('where name')) {
@@ -176,23 +189,23 @@ export class BrowserDatabase {
     }
 
     // UPDATE password_entries
-if (queryLower.includes('update password_entries')) {
-  const entryId = params?.[params.length - 1] as number;
-  const entry = await db.get('password_entries', entryId);
-  
-  if (entry) {
-    await db.put('password_entries', {
-      ...entry,
-      id: entryId,
-      encrypted_site: params?.[0] as string,
-      encrypted_username: params?.[1] as string,
-      encrypted_email: params?.[2] as string,
-      encrypted_password: params?.[3] as string,
-      updated_at: new Date().toISOString(),
-    });
-  }
-  return;
-}
+    if (queryLower.includes('update password_entries')) {
+      const entryId = params?.[params.length - 1] as number;
+      const entry = await db.get('password_entries', entryId);
+      
+      if (entry) {
+        await db.put('password_entries', {
+          ...entry,
+          id: entryId,
+          encrypted_site: params?.[0] as string,
+          encrypted_username: params?.[1] as string,
+          encrypted_email: params?.[2] as string,
+          encrypted_password: params?.[3] as string,
+          updated_at: new Date().toISOString(),
+        });
+      }
+      return;
+    }
 
     // UPDATE sync_metadata
     if (queryLower.includes('update sync_metadata')) {
@@ -220,8 +233,8 @@ if (queryLower.includes('update password_entries')) {
       return;
     }
 
-    // DELETE FROM password_owners
-    if (queryLower.includes('delete from password_owners')) {
+    // DELETE FROM password_owners (with WHERE clause)
+    if (queryLower.includes('delete from password_owners') && queryLower.includes('where')) {
       const ownerId = params?.[0] as number;
       await db.delete('password_owners', ownerId);
       
@@ -235,10 +248,32 @@ if (queryLower.includes('update password_entries')) {
       return;
     }
 
-    // DELETE FROM password_entries
-    if (queryLower.includes('delete from password_entries')) {
+    // DELETE FROM password_owners (without WHERE - delete all)
+    if (queryLower.includes('delete from password_owners')) {
+      console.log('Deleting all password owners...');
+      const tx = db.transaction('password_owners', 'readwrite');
+      const store = tx.objectStore('password_owners');
+      await store.clear();
+      await tx.done;
+      console.log('All password owners deleted');
+      return;
+    }
+
+    // DELETE FROM password_entries (with WHERE clause)
+    if (queryLower.includes('delete from password_entries') && queryLower.includes('where')) {
       const entryId = params?.[0] as number;
       await db.delete('password_entries', entryId);
+      return;
+    }
+
+    // DELETE FROM password_entries (without WHERE - delete all)
+    if (queryLower.includes('delete from password_entries')) {
+      console.log('Deleting all password entries...');
+      const tx = db.transaction('password_entries', 'readwrite');
+      const store = tx.objectStore('password_entries');
+      await store.clear();
+      await tx.done;
+      console.log('All password entries deleted');
       return;
     }
 
