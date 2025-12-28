@@ -38,9 +38,21 @@
         :key="entry.id"
         :entry="entry"
         @edit="handleEdit"
-        @delete="handleDelete"
+        @delete="confirmDelete"
       />
     </div>
+
+    <!-- Delete Confirmation Modal -->
+    <ConfirmationModal
+      :show="showDeleteConfirm"
+      title="Delete Password Entry"
+      message="Are you sure you want to delete this password entry? This action cannot be undone."
+      confirm-text="Delete"
+      cancel-text="Cancel"
+      icon="danger"
+      @confirm="handleDeleteConfirmed"
+      @cancel="handleDeleteCancelled"
+    />
 
     <!-- Add/Edit Password Modal -->
     <div v-if="showAddModal || showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -154,6 +166,7 @@
 import { ref, computed } from 'vue';
 import { usePasswordOwnersStore } from '../stores/passwordOwners';
 import PasswordEntry from './PasswordEntry.vue';
+import ConfirmationModal from './ConfirmationModal.vue';
 import type { DecryptedPasswordEntry } from '../types';
 import { SecurityUtils } from '../utils/security';
 
@@ -164,6 +177,10 @@ const showEditModal = ref(false);
 const showPasswordInput = ref(false);
 const searchQuery = ref('');
 const error = ref('');
+
+// Confirmation modal state
+const showDeleteConfirm = ref(false);
+const pendingDeleteId = ref<number | null>(null);
 
 const formData = ref({
   site: '',
@@ -185,23 +202,6 @@ const filteredEntries = computed(() => {
 
 function generatePassword() {
   formData.value.password = SecurityUtils.generateSecurePassword(16);
-  const length = 16;
-  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-  let password = '';
-  
-  // Ensure at least one of each type
-  password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 26)];
-  password += 'abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)];
-  password += '0123456789'[Math.floor(Math.random() * 10)];
-  password += '!@#$%^&*()_+-='[Math.floor(Math.random() * 14)];
-  
-  // Fill the rest randomly
-  for (let i = password.length; i < length; i++) {
-    password += charset[Math.floor(Math.random() * charset.length)];
-  }
-  
-  // Shuffle the password
-  formData.value.password = password.split('').sort(() => Math.random() - 0.5).join('');
 }
 
 async function handleAddEntry() {
@@ -261,9 +261,35 @@ async function handleUpdateEntry() {
   }
 }
 
+// FIXED: Show modal and store pending ID
+function confirmDelete(entryId: number) {
+  pendingDeleteId.value = entryId;
+  showDeleteConfirm.value = true;
+}
+
+async function handleDeleteConfirmed() {
+  if (pendingDeleteId.value === null) return;
+  
+  try {
+    await store.deletePasswordEntry(pendingDeleteId.value);
+  } catch (err: any) {
+    error.value = err.message || 'Failed to delete password';
+  } finally {
+    showDeleteConfirm.value = false;
+    pendingDeleteId.value = null;
+  }
+}
+
+function handleDeleteCancelled() {
+  showDeleteConfirm.value = false;
+  pendingDeleteId.value = null;
+}
+
 async function handleDelete(entryId: number) {
-  if (confirm('Are you sure you want to delete this password entry?')) {
+  try {
     await store.deletePasswordEntry(entryId);
+  } catch (err: any) {
+    error.value = err.message || 'Failed to delete password';
   }
 }
 

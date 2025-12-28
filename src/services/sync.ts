@@ -22,8 +22,6 @@ export interface SyncData {
 
 export class SyncService {
   private static deviceId: string | null = null;
-  // private static discoveryInterval: number | null = null;
-  // private static peers: Map<string, SyncDevice> = new Map();
 
   // Generate or retrieve device ID
   static getDeviceId(): string {
@@ -205,95 +203,130 @@ export class SyncService {
   }
 
   // Save sync data to file for manual transfer
-static async saveSyncFile(): Promise<string> {
-  const syncData = await this.exportSyncData();
-  const encrypted = await this.encryptSyncData(syncData);
-  
-  if (isDesktopApp()) {
-    // Desktop: Use native file dialog
+  static async saveSyncFile(): Promise<string> {
     try {
-      const filePath = await save({
-        defaultPath: `password-vault-sync-${Date.now()}.pvs`,
-        filters: [{
-          name: 'Password Vault Sync',
-          extensions: ['pvs']
-        }]
-      });
+      console.log('1. Exporting sync data...');
+      const syncData = await this.exportSyncData();
+      console.log('2. Sync data exported:', syncData);
+      
+      console.log('3. Encrypting data...');
+      const encrypted = this.encryptSyncData(syncData);
+      console.log('4. Data encrypted, length:', encrypted.length);
+      
+      if (isDesktopApp()) {
+        console.log('5. Running in desktop mode, showing save dialog...');
+        // Desktop: Use native file dialog
+        try {
+          const filePath = await save({
+            defaultPath: `password-vault-sync-${Date.now()}.pvs`,
+            filters: [{
+              name: 'Password Vault Sync',
+              extensions: ['pvs']
+            }]
+          });
 
-      if (filePath) {
-        await writeTextFile(filePath, encrypted);
-        return filePath;
+          console.log('6. File path selected:', filePath);
+
+          if (!filePath) {
+            console.log('7. User cancelled file dialog');
+            throw new Error('Save cancelled - no file path selected');
+          }
+
+          console.log('8. Writing file to:', filePath);
+          await writeTextFile(filePath, encrypted);
+          console.log('9. File written successfully');
+          
+          return filePath;
+        } catch (error: any) {
+          console.error('Desktop save error:', error);
+          throw new Error(`Desktop save failed: ${error.message || 'Unknown error'}`);
+        }
       } else {
-        throw new Error('Save cancelled');
-      }
-    } catch (error) {
-      throw new Error('Failed to save sync file');
-    }
-  } else {
-    // Browser: Use download
-    const blob = new Blob([encrypted], { type: 'application/octet-stream' });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement('a');
-    a.href = url;
-    const filename = `password-vault-sync-${Date.now()}.pvs`;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+        console.log('5. Running in browser mode, triggering download...');
+        // Browser: Use download
+        try {
+          const blob = new Blob([encrypted], { type: 'application/octet-stream' });
+          const url = URL.createObjectURL(blob);
+          
+          const a = document.createElement('a');
+          a.href = url;
+          const filename = `password-vault-sync-${Date.now()}.pvs`;
+          a.download = filename;
+          document.body.appendChild(a);
+          a.click();
+          
+          // Small delay before cleanup
+          setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }, 100);
 
-    return `Downloaded to: ${filename}`;
+          console.log('6. Browser download triggered:', filename);
+          return `Downloaded to: ${filename}`;
+        } catch (error: any) {
+          console.error('Browser download error:', error);
+          throw new Error(`Browser download failed: ${error.message || 'Unknown error'}`);
+        }
+      }
+    } catch (error: any) {
+      console.error('Save sync file error:', error);
+      throw new Error(error.message || 'Failed to save sync file');
+    }
   }
-}
 
   // Load sync data from file
-static async loadSyncFile(file?: File): Promise<void> {
-  if (isDesktopApp() && !file) {
-    // Desktop: Use native file picker
-    try {
-      const selected = await open({
-        multiple: false,
-        filters: [{
-          name: 'Password Vault Sync',
-          extensions: ['pvs']
-        }]
-      });
+  static async loadSyncFile(file?: File): Promise<void> {
+    if (isDesktopApp() && !file) {
+      // Desktop: Use native file picker
+      try {
+        const selected = await open({
+          multiple: false,
+          filters: [{
+            name: 'Password Vault Sync',
+            extensions: ['pvs']
+          }]
+        });
 
-      if (!selected) {
-        throw new Error('No file selected');
-      }
-
-      const filePath = Array.isArray(selected) ? selected[0] : selected;
-      const encrypted = await readTextFile(filePath);
-      const syncData = await this.decryptSyncData(encrypted);
-      await this.importSyncData(syncData);
-    } catch (error: any) {
-      throw new Error(`Failed to load sync file: ${error.message}`);
-    }
-  } else if (file) {
-    // Browser: Use provided file
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = async (e) => {
-        try {
-          const encrypted = e.target?.result as string;
-          const syncData = await this.decryptSyncData(encrypted);
-          await this.importSyncData(syncData);
-          resolve();
-        } catch (error) {
-          reject(error);
+        if (!selected) {
+          throw new Error('No file selected');
         }
-      };
-      
-      reader.onerror = () => reject(new Error('Failed to read file'));
-      reader.readAsText(file);
-    });
-  } else {
-    throw new Error('No file provided');
+
+        const filePath = Array.isArray(selected) ? selected[0] : selected;
+        const encrypted = await readTextFile(filePath);
+        const syncData = this.decryptSyncData(encrypted);
+        await this.importSyncData(syncData);
+      } catch (error: any) {
+        console.error('Desktop load error:', error);
+        throw new Error(`Failed to load sync file: ${error.message || 'Unknown error'}`);
+      }
+    } else if (file) {
+      // Browser: Use provided file
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        
+        reader.onload = async (e) => {
+          try {
+            const encrypted = e.target?.result as string;
+            const syncData = this.decryptSyncData(encrypted);
+            await this.importSyncData(syncData);
+            resolve();
+          } catch (error: any) {
+            console.error('File read error:', error);
+            reject(new Error(`Failed to process file: ${error.message || 'Unknown error'}`));
+          }
+        };
+        
+        reader.onerror = () => {
+          console.error('File reader error:', reader.error);
+          reject(new Error('Failed to read file'));
+        };
+        
+        reader.readAsText(file);
+      });
+    } else {
+      throw new Error('No file provided');
+    }
   }
-}
 
   // Get last sync time
   static async getLastSyncTime(): Promise<Date | null> {

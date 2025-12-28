@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { SyncService } from '../services/sync';
-// import type { SyncData } from '../services/sync';
 
 export const useSyncStore = defineStore('sync', () => {
   const isSyncing = ref(false);
@@ -25,13 +24,18 @@ export const useSyncStore = defineStore('sync', () => {
       isSyncing.value = true;
       syncError.value = '';
       
+      console.log('Sync store: Starting export...');
       const filename = await SyncService.saveSyncFile();
+      console.log('Sync store: Export completed:', filename);
+      
       await loadLastSyncTime();
       
       return filename;
     } catch (error: any) {
-      syncError.value = error.message || 'Failed to export data';
-      throw error;
+      console.error('Sync store: Export error:', error);
+      const errorMessage = error.message || 'Failed to export data. Please try again.';
+      syncError.value = errorMessage;
+      throw new Error(errorMessage);
     } finally {
       isSyncing.value = false;
     }
@@ -43,11 +47,16 @@ export const useSyncStore = defineStore('sync', () => {
       isSyncing.value = true;
       syncError.value = '';
       
+      console.log('Sync store: Starting import...');
       await SyncService.loadSyncFile(file);
+      console.log('Sync store: Import completed');
+      
       await loadLastSyncTime();
     } catch (error: any) {
-      syncError.value = error.message || 'Failed to import data';
-      throw error;
+      console.error('Sync store: Import error:', error);
+      const errorMessage = error.message || 'Failed to import data. Please try again.';
+      syncError.value = errorMessage;
+      throw new Error(errorMessage);
     } finally {
       isSyncing.value = false;
     }

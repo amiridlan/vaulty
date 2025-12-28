@@ -12,8 +12,19 @@
     "sql:default",
     "fs:allow-read",
     "fs:allow-write",
+    "fs:allow-read-text-file",
+    "fs:allow-write-text-file",
+    "fs:allow-home-write",
+    "fs:allow-home-read",
+    "fs:allow-document-write",
+    "fs:allow-document-read",
+    "fs:allow-download-write",
+    "fs:allow-download-read",
+    "fs:allow-desktop-write",
+    "fs:allow-desktop-read",
     "fs:default",
     "dialog:allow-open",
+    "dialog:allow-save",
     "dialog:default"
   ]
 }

@@ -40,7 +40,7 @@
 
             <!-- Logout Button -->
             <button
-              @click="handleLogout"
+              @click="confirmLogout"
               class="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded-lg transition duration-200 text-sm sm:text-base"
             >
               Logout
@@ -75,6 +75,18 @@
       </div>
     </footer>
 
+    <!-- Logout Confirmation Modal -->
+    <ConfirmationModal
+      :show="showLogoutConfirm"
+      title="Logout Confirmation"
+      message="Are you sure you want to logout? Make sure you've saved all your changes."
+      confirm-text="Logout"
+      cancel-text="Stay"
+      icon="warning"
+      @confirm="handleLogoutConfirmed"
+      @cancel="handleLogoutCancelled"
+    />
+
     <!-- Sync Modal -->
     <div v-if="showSyncModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
       <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -105,6 +117,7 @@ import { usePasswordOwnersStore } from '../stores/passwordOwners';
 import PasswordOwners from './PasswordOwners.vue';
 import PasswordList from './PasswordList.vue';
 import SyncPanel from './SyncPanel.vue';
+import ConfirmationModal from './ConfirmationModal.vue';
 
 const authStore = useAuthStore();
 const passwordStore = usePasswordOwnersStore();
@@ -113,6 +126,7 @@ const viewState = ref<'owners' | 'passwords'>('owners');
 const timeRemaining = ref(180); // 3 minutes in seconds
 const timerInterval = ref<number | null>(null);
 const showSyncModal = ref(false);
+const showLogoutConfirm = ref(false);
 
 const INACTIVITY_TIMEOUT = 3 * 60 * 1000; // 3 minutes
 
@@ -142,7 +156,8 @@ function startTimer() {
     timeRemaining.value = remaining;
     
     if (remaining === 0) {
-      handleLogout();
+      // Auto logout without confirmation
+      authStore.logout();
     }
   }, 1000);
 }
@@ -163,9 +178,21 @@ function backToOwners() {
   passwordStore.currentOwnerId = null;
 }
 
+// FIXED: Show modal instead of confirm
+function confirmLogout() {
+  showLogoutConfirm.value = true;
+}
+
+function handleLogoutConfirmed() {
+  showLogoutConfirm.value = false;
+  authStore.logout();
+}
+
+function handleLogoutCancelled() {
+  showLogoutConfirm.value = false;
+}
+
 function handleLogout() {
-  if (confirm('Are you sure you want to logout?')) {
-    authStore.logout();
-  }
+  authStore.logout();
 }
 </script>

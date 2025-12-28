@@ -30,7 +30,7 @@
             </p>
           </div>
           <button
-            @click.stop="handleDeleteOwner(owner.id, owner.name)"
+            @click.stop="confirmDeleteOwner(owner.id, owner.name)"
             class="text-red-500 hover:text-red-700 transition duration-200 ml-2 flex-shrink-0"
           >
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -40,6 +40,18 @@
         </div>
       </div>
     </div>
+
+    <!-- Delete Owner Confirmation Modal -->
+    <ConfirmationModal
+      :show="showDeleteConfirm"
+      title="Delete Password Owner"
+      :message="`Are you sure you want to delete &quot;${pendingDeleteOwner?.name}&quot; and all associated passwords? This action cannot be undone.`"
+      confirm-text="Delete Owner"
+      cancel-text="Cancel"
+      icon="danger"
+      @confirm="handleDeleteConfirmed"
+      @cancel="handleDeleteCancelled"
+    />
 
     <!-- Add Owner Modal -->
     <div v-if="showAddModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -88,6 +100,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
 import { usePasswordOwnersStore } from '../stores/passwordOwners';
+import ConfirmationModal from './ConfirmationModal.vue';
 
 const emit = defineEmits<{
   ownerSelected: [ownerId: number]
@@ -98,6 +111,10 @@ const store = usePasswordOwnersStore();
 const showAddModal = ref(false);
 const newOwnerName = ref('');
 const error = ref('');
+
+// Confirmation modal state
+const showDeleteConfirm = ref(false);
+const pendingDeleteOwner = ref<{ id: number; name: string } | null>(null);
 
 const owners = computed(() => store.owners);
 const currentOwnerId = computed(() => store.currentOwnerId);
@@ -133,9 +150,35 @@ async function handleSelectOwner(ownerId: number) {
   emit('ownerSelected', ownerId);
 }
 
-async function handleDeleteOwner(ownerId: number, ownerName: string) {
-  if (confirm(`Are you sure you want to delete "${ownerName}" and all associated passwords?`)) {
+// FIXED: Show modal and store pending owner
+function confirmDeleteOwner(ownerId: number, ownerName: string) {
+  pendingDeleteOwner.value = { id: ownerId, name: ownerName };
+  showDeleteConfirm.value = true;
+}
+
+async function handleDeleteConfirmed() {
+  if (!pendingDeleteOwner.value) return;
+  
+  try {
+    await store.deleteOwner(pendingDeleteOwner.value.id);
+  } catch (err: any) {
+    error.value = err.message || 'Failed to delete owner';
+  } finally {
+    showDeleteConfirm.value = false;
+    pendingDeleteOwner.value = null;
+  }
+}
+
+function handleDeleteCancelled() {
+  showDeleteConfirm.value = false;
+  pendingDeleteOwner.value = null;
+}
+
+async function handleDeleteOwner(ownerId: number) {
+  try {
     await store.deleteOwner(ownerId);
+  } catch (err: any) {
+    error.value = err.message || 'Failed to delete owner';
   }
 }
 </script>
