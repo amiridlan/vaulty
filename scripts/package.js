@@ -3,7 +3,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { fileURLToPath } from 'url';
 
-const version = '1.0.0';
+const version = '1.2.0';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const bundlePath = path.join(__dirname, '..', 'src-tauri', 'target', 'release', 'bundle');
