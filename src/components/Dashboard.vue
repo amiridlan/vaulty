@@ -1,26 +1,26 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div class="min-h-screen bg-background">
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
+    <header class="bg-card shadow-sm border-b border-border">
       <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex flex-wrap sm:flex-nowrap justify-between items-center py-4 gap-4">
           <div class="flex items-center">
-            <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Password Vault</h1>
-            <span class="ml-2 sm:ml-4 px-2 sm:px-3 py-1 bg-green-100 text-green-800 text-xs font-semibold rounded-full">
+            <h1 class="text-xl sm:text-2xl font-bold text-foreground">Password Vault</h1>
+            <span class="ml-2 sm:ml-4 px-2 sm:px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20">
               Encrypted
             </span>
           </div>
 
           <div class="flex items-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
             <!-- Activity Timer -->
-            <div class="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-              Logout: <span class="font-semibold">{{ formattedTimeRemaining }}</span>
+            <div class="text-xs sm:text-sm text-muted-foreground whitespace-nowrap">
+              Logout: <span class="font-semibold text-foreground">{{ formattedTimeRemaining }}</span>
             </div>
 
             <!-- Sync Button -->
             <button
               @click="showSyncModal = true"
-              class="flex items-center gap-2 px-3 sm:px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition duration-200"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-3 sm:px-4 py-2 gap-2"
               title="Sync with other devices"
             >
               <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,7 +33,7 @@
             <button
               v-if="viewState === 'passwords'"
               @click="backToOwners"
-              class="px-3 sm:px-4 py-2 text-sm sm:text-base text-gray-700 hover:text-gray-900 transition duration-200 whitespace-nowrap"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-3 sm:px-4 py-2"
             >
               ← Back
             </button>
@@ -41,7 +41,7 @@
             <!-- Logout Button -->
             <button
               @click="confirmLogout"
-              class="bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-2 rounded-lg transition duration-200 text-sm sm:text-base"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-3 sm:px-4 py-2"
             >
               Logout
             </button>
@@ -67,9 +67,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 mt-12">
+    <footer class="bg-card border-t border-border mt-12">
       <div class="w-full px-4 sm:px-6 lg:px-8 py-4">
-        <p class="text-center text-xs sm:text-sm text-gray-500">
+        <p class="text-center text-xs sm:text-sm text-muted-foreground">
           🔒 All data is encrypted locally. No internet connection required.
         </p>
       </div>
@@ -88,13 +88,13 @@
     />
 
     <!-- Sync Modal -->
-    <div v-if="showSyncModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div class="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        <div class="sticky top-0 bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex justify-between items-center">
-          <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Sync Your Vault</h2>
+    <div v-if="showSyncModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div class="bg-card rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-border shadow-lg">
+        <div class="sticky top-0 bg-card border-b border-border px-4 sm:px-6 py-4 flex justify-between items-center">
+          <h2 class="text-xl sm:text-2xl font-bold text-foreground">Sync Your Vault</h2>
           <button
             @click="showSyncModal = false"
-            class="text-gray-500 hover:text-gray-700 transition duration-200"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -178,7 +178,6 @@ function backToOwners() {
   passwordStore.currentOwnerId = null;
 }
 
-// FIXED: Show modal instead of confirm
 function confirmLogout() {
   showLogoutConfirm.value = true;
 }
