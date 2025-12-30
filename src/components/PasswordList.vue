@@ -2,14 +2,14 @@
   <div class="p-6">
     <div class="flex justify-between items-center mb-6">
       <div>
-        <h2 class="text-2xl font-bold text-gray-800">
+        <h2 class="text-2xl font-bold text-foreground">
           {{ currentOwnerName }}'s Passwords
         </h2>
-        <p class="text-sm text-gray-500 mt-1">{{ filteredEntries.length }} entries</p>
+        <p class="text-sm text-muted-foreground mt-1">{{ filteredEntries.length }} entries</p>
       </div>
       <button
         @click="showAddModal = true"
-        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition duration-200"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
       >
         + Add Password
       </button>
@@ -21,13 +21,13 @@
         v-model="searchQuery"
         type="text"
         placeholder="Search by site, username, or email..."
-        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
       />
     </div>
 
     <!-- Password entries -->
     <div v-if="filteredEntries.length === 0" class="text-center py-12">
-      <p class="text-gray-500 text-lg">
+      <p class="text-muted-foreground text-lg">
         {{ searchQuery ? 'No passwords found matching your search.' : 'No passwords yet. Add one to get started!' }}
       </p>
     </div>
@@ -55,53 +55,53 @@
     />
 
     <!-- Add/Edit Password Modal -->
-    <div v-if="showAddModal || showEditModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-        <h3 class="text-xl font-bold text-gray-800 mb-4">
+    <div v-if="showAddModal || showEditModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-card rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto border border-border shadow-lg">
+        <h3 class="text-xl font-bold text-foreground mb-4">
           {{ showEditModal ? 'Edit Password' : 'Add New Password' }}
         </h3>
         
         <form @submit.prevent="showEditModal ? handleUpdateEntry() : handleAddEntry()">
           <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-foreground">
                 Site/App Name *
               </label>
               <input
                 v-model="formData.site"
                 type="text"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="e.g., Facebook, Gmail, Netflix"
               />
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-foreground">
                 Username
               </label>
               <input
                 v-model="formData.username"
                 type="text"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Enter username"
               />
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-foreground">
                 Email
               </label>
               <input
                 v-model="formData.email"
                 type="email"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                 placeholder="Enter email"
               />
             </div>
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-2">
+            <div class="space-y-2">
+              <label class="text-sm font-medium text-foreground">
                 Password *
               </label>
               <div class="relative">
@@ -109,13 +109,13 @@
                   v-model="formData.password"
                   :type="showPasswordInput ? 'text' : 'password'"
                   required
-                  class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-20"
+                  class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10"
                   placeholder="Enter password"
                 />
                 <button
                   type="button"
                   @click="showPasswordInput = !showPasswordInput"
-                  class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  class="absolute right-2 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <svg v-if="!showPasswordInput" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -131,27 +131,27 @@
             <button
               type="button"
               @click="generatePassword"
-              class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 rounded-lg transition duration-200"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full"
             >
               Generate Strong Password
             </button>
           </div>
 
-          <div v-if="error" class="mt-4 bg-red-50 border border-red-200 text-red-700 px-4 py-2 rounded-lg text-sm">
-            {{ error }}
+          <div v-if="error" class="mt-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+            <p class="text-sm text-destructive">{{ error }}</p>
           </div>
 
           <div class="flex gap-3 mt-6">
             <button
               type="button"
               @click="closeModal"
-              class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded-lg transition duration-200"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 flex-1"
             >
               Cancel
             </button>
             <button
               type="submit"
-              class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition duration-200"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 flex-1"
             >
               {{ showEditModal ? 'Update' : 'Add' }}
             </button>
@@ -261,7 +261,6 @@ async function handleUpdateEntry() {
   }
 }
 
-// FIXED: Show modal and store pending ID
 function confirmDelete(entryId: number) {
   pendingDeleteId.value = entryId;
   showDeleteConfirm.value = true;
@@ -284,7 +283,6 @@ function handleDeleteCancelled() {
   showDeleteConfirm.value = false;
   pendingDeleteId.value = null;
 }
-
 
 function closeModal() {
   showAddModal.value = false;

@@ -1,15 +1,15 @@
 <template>
   <div 
     v-if="show"
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]"
+    class="fixed inset-0 bg-black/50 flex items-center justify-center z-[9999]"
     @click.self="handleCancel"
   >
-    <div class="bg-white rounded-lg shadow-2xl p-6 w-full max-w-md mx-4">
+    <div class="bg-card rounded-lg shadow-2xl p-6 w-full max-w-md mx-4 border border-border">
       <div class="flex items-start gap-4 mb-4">
         <div class="flex-shrink-0">
           <svg 
             class="w-6 h-6"
-            :class="icon === 'danger' ? 'text-red-600' : 'text-yellow-600'"
+            :class="icon === 'danger' ? 'text-destructive' : 'text-yellow-600 dark:text-yellow-500'"
             fill="none" 
             stroke="currentColor" 
             viewBox="0 0 24 24"
@@ -23,10 +23,10 @@
           </svg>
         </div>
         <div class="flex-1">
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">
+          <h3 class="text-lg font-semibold text-foreground mb-2">
             {{ title }}
           </h3>
-          <p class="text-sm text-gray-600">
+          <p class="text-sm text-muted-foreground">
             {{ message }}
           </p>
         </div>
@@ -35,16 +35,16 @@
       <div class="flex gap-3 justify-end mt-6">
         <button
           @click="handleCancel"
-          class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition duration-200"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
         >
           {{ cancelText }}
         </button>
         <button
           @click="handleConfirm"
-          class="px-4 py-2 rounded-lg transition duration-200"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 h-10 px-4 py-2"
           :class="icon === 'danger' 
-            ? 'bg-red-600 hover:bg-red-700 text-white' 
-            : 'bg-blue-600 hover:bg-blue-700 text-white'"
+            ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' 
+            : 'bg-primary text-primary-foreground hover:bg-primary/90'"
         >
           {{ confirmText }}
         </button>

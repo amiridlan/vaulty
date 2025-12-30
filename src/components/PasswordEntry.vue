@@ -1,23 +1,23 @@
 <template>
-  <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition duration-200">
+  <div class="bg-card border border-border rounded-lg p-4 hover:shadow-md transition-all duration-200">
     <div class="flex justify-between items-start mb-3">
       <div class="flex-1">
-        <h4 class="text-lg font-semibold text-gray-800 mb-1">{{ entry.site }}</h4>
+        <h4 class="text-lg font-semibold text-foreground mb-1">{{ entry.site }}</h4>
         <div class="space-y-1">
           <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-500 font-medium">Username:</span>
-            <span v-if="!showDetails" class="text-sm text-gray-700">••••••••</span>
-            <span v-else class="text-sm text-gray-700">{{ entry.username }}</span>
+            <span class="text-sm text-muted-foreground font-medium">Username:</span>
+            <span v-if="!showDetails" class="text-sm text-foreground">••••••••</span>
+            <span v-else class="text-sm text-foreground">{{ entry.username }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-500 font-medium">Email:</span>
-            <span v-if="!showDetails" class="text-sm text-gray-700">••••••••</span>
-            <span v-else class="text-sm text-gray-700">{{ entry.email }}</span>
+            <span class="text-sm text-muted-foreground font-medium">Email:</span>
+            <span v-if="!showDetails" class="text-sm text-foreground">••••••••</span>
+            <span v-else class="text-sm text-foreground">{{ entry.email }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-sm text-gray-500 font-medium">Password:</span>
-            <span v-if="!showDetails" class="text-sm text-gray-700">••••••••</span>
-            <span v-else class="text-sm text-gray-700 font-mono">{{ entry.password }}</span>
+            <span class="text-sm text-muted-foreground font-medium">Password:</span>
+            <span v-if="!showDetails" class="text-sm text-foreground">••••••••</span>
+            <span v-else class="text-sm text-foreground font-mono">{{ entry.password }}</span>
           </div>
         </div>
       </div>
@@ -26,7 +26,7 @@
         <button
           @click="toggleDetails"
           :title="showDetails ? 'Hide' : 'Show'"
-          class="text-gray-500 hover:text-blue-600 transition duration-200"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
         >
           <svg v-if="!showDetails" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -40,7 +40,7 @@
         <button
           @click="$emit('edit', entry)"
           title="Edit"
-          class="text-gray-500 hover:text-blue-600 transition duration-200"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-primary/10 hover:text-primary h-9 w-9"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -50,7 +50,7 @@
         <button
           @click="handleCopyPassword"
           title="Copy Password"
-          class="text-gray-500 hover:text-green-600 transition duration-200"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-green-500/10 hover:text-green-600 dark:hover:text-green-400 h-9 w-9"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -60,7 +60,7 @@
         <button
           @click="$emit('delete', entry.id)"
           title="Delete"
-          class="text-gray-500 hover:text-red-600 transition duration-200"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-destructive/10 hover:text-destructive h-9 w-9"
         >
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -69,16 +69,16 @@
       </div>
     </div>
 
-    <div class="text-xs text-gray-400 mt-2">
+    <div class="text-xs text-muted-foreground mt-2">
       Updated: {{ formatDate(entry.updated_at) }}
     </div>
 
     <!-- Copy notification -->
     <div
       v-if="showCopyNotification"
-      class="mt-2 bg-green-50 border border-green-200 text-green-700 px-3 py-1 rounded text-sm"
+      class="mt-2 rounded-md border border-green-500/50 bg-green-500/10 px-3 py-1"
     >
-      Password copied to clipboard!
+      <p class="text-sm text-green-700 dark:text-green-400">Password copied to clipboard!</p>
     </div>
   </div>
 </template>
