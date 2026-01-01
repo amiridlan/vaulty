@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-background">
+  <div class="min-h-screen bg-background flex flex-col">
     <!-- Header -->
     <header class="bg-card shadow-sm border-b border-border">
       <div class="w-full px-4 sm:px-6 lg:px-8">
@@ -20,7 +20,7 @@
             <!-- Sync Button -->
             <button
               @click="showSyncModal = true"
-              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-3 sm:px-4 py-2 gap-2"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-3 sm:px-4 py-2 gap-2"
               title="Sync with other devices"
             >
               <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -33,7 +33,7 @@
             <button
               v-if="viewState === 'passwords'"
               @click="backToOwners"
-              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-3 sm:px-4 py-2"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 px-3 sm:px-4 py-2"
             >
               ← Back
             </button>
@@ -41,7 +41,7 @@
             <!-- Logout Button -->
             <button
               @click="confirmLogout"
-              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-3 sm:px-4 py-2"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-destructive text-destructive-foreground hover:bg-destructive/90 h-10 px-3 sm:px-4 py-2"
             >
               Logout
             </button>
@@ -51,7 +51,7 @@
     </header>
 
     <!-- Main Content -->
-    <main class="w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+    <main class="flex-1 w-full px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div class="max-w-7xl mx-auto">
         <!-- Show Password Owners -->
         <PasswordOwners
@@ -67,7 +67,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-card border-t border-border mt-12">
+    <footer class="bg-card border-t border-border mt-auto">
       <div class="w-full px-4 sm:px-6 lg:px-8 py-4">
         <p class="text-center text-xs sm:text-sm text-muted-foreground">
           🔒 All data is encrypted locally. No internet connection required.
@@ -94,7 +94,7 @@
           <h2 class="text-xl sm:text-2xl font-bold text-foreground">Sync Your Vault</h2>
           <button
             @click="showSyncModal = false"
-            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-muted-foreground hover:bg-accent hover:text-accent-foreground h-9 w-9"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
