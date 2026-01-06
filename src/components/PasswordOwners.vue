@@ -31,11 +31,8 @@
           </div>
           <button
             @click.stop="confirmDeleteOwner(owner.id, owner.name)"
-            class=" inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-muted-foreground hover:bg-destructive/10 hover:text-destructive h-9 w-9 ml-2 flex-shrink-0"
-          >
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-            </svg>
+            class="bg-primary hover:bg-muted hover:text-destructive">
+            <Trash2 :size="18" :stroke-width="2.5" />
           </button>
         </div>
       </div>
@@ -67,7 +64,7 @@
               v-model="newOwnerName"
               type="text"
               required
-              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-destructive ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="e.g., Wife, Husband, Son"
             />
           </div>
@@ -80,7 +77,7 @@
             <button
               type="button"
               @click="closeAddModal"
-              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 flex-1 font-semibold"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm text-primary font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 flex-1 font-semibold"
             >
               Cancel
             </button>
@@ -101,6 +98,7 @@
 import { ref, onMounted, computed } from 'vue';
 import { usePasswordOwnersStore } from '../stores/passwordOwners';
 import ConfirmationModal from './ConfirmationModal.vue';
+import { Trash2 } from 'lucide-vue-next';
 
 const emit = defineEmits<{
   ownerSelected: [ownerId: number]

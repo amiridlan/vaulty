@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center p-4">
+  <div class="min-h-screen bg-primary flex items-center justify-center p-4">
     <div class="bg-card rounded-lg shadow-2xl p-8 w-full max-w-md max-h-[90vh] overflow-y-auto border border-border">
       <div class="text-center mb-8">
         <div class="inline-block p-3 bg-primary/10 rounded-full mb-4">

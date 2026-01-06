@@ -8,18 +8,14 @@
         </p>
       </div>
       <div class="flex items-center gap-2">
-        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-        </svg>
+        <ArrowLeftRight :size="28" :stroke-width="2.5" class="text-primary" />
       </div>
     </div>
 
     <!-- Device Info -->
     <div class="rounded-lg border border-primary/50 bg-primary/10 p-4 mb-6">
       <div class="flex items-start gap-3">
-        <svg class="w-5 h-5 text-primary mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
+        <Monitor :size="22" :stroke-width="2.5" class="text-primary mt-0.5" />
         <div class="flex-1">
           <p class="text-sm font-medium text-foreground">This Device</p>
           <p class="text-xs text-muted-foreground font-mono mt-1">{{ deviceId }}</p>
@@ -46,9 +42,7 @@
       <!-- Export Data -->
       <div class="border-2 border-dashed border-border rounded-lg p-6 hover:border-primary/50 transition-all duration-200">
         <div class="text-center">
-          <svg class="w-12 h-12 text-muted-foreground mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-          </svg>
+          <CloudUpload :size="56" :stroke-width="2" class="text-foreground/60 mx-auto mb-3" />
           <h4 class="text-lg font-semibold text-foreground mb-2">Export Vault Data</h4>
           <p class="text-sm text-muted-foreground mb-4">
             Download an encrypted file to sync with another device
@@ -67,9 +61,7 @@
       <!-- Import Data -->
       <div class="border-2 border-dashed border-border rounded-lg p-6 hover:border-green-500/50 transition-all duration-200">
         <div class="text-center">
-          <svg class="w-12 h-12 text-muted-foreground mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-          </svg>
+          <CloudDownload :size="56" :stroke-width="2" class="text-foreground/60 mx-auto mb-3" />
           <h4 class="text-lg font-semibold text-foreground mb-2">Import Vault Data</h4>
           <p class="text-sm text-muted-foreground mb-4">
             Upload a sync file from another device to merge data
@@ -128,9 +120,7 @@
     <!-- Info Box -->
     <div class="mt-6 rounded-lg border border-yellow-500/50 bg-yellow-500/10 p-4">
       <div class="flex gap-3">
-        <svg class="w-5 h-5 text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
+        <Info :size="20" :stroke-width="2.5" class="text-yellow-600 dark:text-yellow-500 flex-shrink-0 mt-0.5" />
         <div class="text-sm text-yellow-800 dark:text-yellow-200">
           <p class="font-semibold mb-1">How it works:</p>
           <ul class="list-disc list-inside space-y-1">
@@ -152,6 +142,7 @@ import { useSyncStore } from '../stores/sync';
 import { usePasswordOwnersStore } from '../stores/passwordOwners';
 import { SyncService } from '../services/sync';
 import { isDesktopApp } from '../utils/tauri';
+import { ArrowLeftRight, Monitor, CloudUpload, CloudDownload, Info } from 'lucide-vue-next';
 
 const syncStore = useSyncStore();
 const passwordStore = usePasswordOwnersStore();

@@ -20,13 +20,11 @@
             <!-- Sync Button -->
             <button
               @click="showSyncModal = true"
-              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-3 sm:px-4 py-2 gap-2"
+              class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border-2 border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 text-primary h-10 px-3 sm:px-4 py-2 gap-2"
               title="Sync with other devices"
             >
-              <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-              </svg>
-              <span class="text-sm sm:text-base">Sync</span>
+              <ArrowLeftRight :size="18" :stroke-width="2.5" class="sm:w-5 sm:h-5" />
+              <span class="text-sm sm:text-base font-bold">Sync</span>
             </button>
 
             <!-- Back to Owners Button (when viewing passwords) -->
@@ -94,11 +92,9 @@
           <h2 class="text-xl sm:text-2xl font-bold text-foreground">Sync Your Vault</h2>
           <button
             @click="showSyncModal = false"
-            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-muted-foreground hover:bg-accent hover:text-accent-foreground h-9 w-9"
+            class="bg-primary hover:bg-muted"
           >
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X :size="20" :stroke-width="2.5" />
           </button>
         </div>
         
@@ -118,6 +114,7 @@ import PasswordOwners from './PasswordOwners.vue';
 import PasswordList from './PasswordList.vue';
 import SyncPanel from './SyncPanel.vue';
 import ConfirmationModal from './ConfirmationModal.vue';
+import { ArrowLeftRight, X } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const passwordStore = usePasswordOwnersStore();
