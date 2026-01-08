@@ -140,7 +140,7 @@
         <button
           type="submit"
           :disabled="loading || (isSetup && passwordStrength.score < 5)"
-          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
+          class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-secondary h-10 px-4 py-2 w-full"
         >
           {{ loading ? 'Processing...' : (isSetup ? 'Create Vault' : 'Unlock Vault') }}
         </button>
@@ -150,7 +150,7 @@
           <button
             type="button"
             @click="showForgotPassword = true"
-            class="text-sm font-medium text-primary hover:text-primary/80 transition-colors underline-offset-4 hover:underline"
+            class="text-sm font-medium text-primary-foreground bg-primary hover:bg-secondary transition-colors underline-offset-4 hover:underline"
           >
             Forgot Password?
           </button>
