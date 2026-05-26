@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useAuthStore } from './stores/auth';
 import { useSyncStore } from './stores/sync';
+import { useUpdaterStore } from './stores/updater';
 import { initDatabase } from './services/database';
 import { VaultIdentityService } from './services/vaultIdentity';
 import { isDesktopApp, waitForTauri } from './utils/tauri';
@@ -9,11 +10,13 @@ import FirstLaunch from './components/FirstLaunch.vue';
 import Login from './components/Login.vue';
 import Dashboard from './components/Dashboard.vue';
 import SyncCode from './components/SyncCode.vue';
+import UpdateBanner from './components/UpdateBanner.vue';
 
 type AppView = 'loading' | 'error' | 'first-launch' | 'login' | 'show-sync-code' | 'dashboard';
 
 const authStore = useAuthStore();
 const syncStore = useSyncStore();
+const updaterStore = useUpdaterStore();
 
 const appView = ref<AppView>('loading');
 const errorMsg = ref('');
@@ -76,6 +79,7 @@ function handleJoined() {
     syncStore.reconnectKnownPeers();
     syncStore.startBackgroundSync();
   }, 2000);
+  setTimeout(() => updaterStore.checkForUpdate(), 5000);
 }
 
 // Called by Login.vue when re-authentication succeeds during normal login.
@@ -89,6 +93,7 @@ async function handleAuthenticated() {
     syncStore.reconnectKnownPeers();
     syncStore.startBackgroundSync();
   }, 2000);
+  setTimeout(() => updaterStore.checkForUpdate(), 5000);
 }
 
 onMounted(() => {
@@ -178,6 +183,9 @@ onMounted(() => {
     />
 
     <!-- Main app -->
-    <Dashboard v-else-if="appView === 'dashboard'" />
+    <div v-else-if="appView === 'dashboard'" class="flex flex-col min-h-screen">
+      <UpdateBanner />
+      <Dashboard class="flex-1" />
+    </div>
   </div>
 </template>

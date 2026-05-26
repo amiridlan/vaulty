@@ -8,6 +8,8 @@ fn main() {
         .plugin(tauri_plugin_sql::Builder::new().build())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         // SyncState must be managed before the setup hook runs
         .manage(sync::SyncState::new())
         .setup(|app| {
