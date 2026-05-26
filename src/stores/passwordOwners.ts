@@ -21,13 +21,14 @@ export const usePasswordOwnersStore = defineStore('passwordOwners', () => {
   // Create a new password owner
   async function createOwner(name: string): Promise<void> {
     const db = await getDatabase();
-    
+
     // Encrypt owner name (optional, for additional security)
     const encryptedData = EncryptionService.encrypt(JSON.stringify({ name }));
+    const syncId = crypto.randomUUID();
 
     await db.execute(
-      'INSERT INTO password_owners (name, encrypted_data) VALUES (?, ?)',
-      [name, encryptedData]
+      'INSERT INTO password_owners (name, encrypted_data, sync_id) VALUES (?, ?, ?)',
+      [name, encryptedData, syncId]
     );
 
     await loadOwners();
@@ -98,11 +99,13 @@ export const usePasswordOwnersStore = defineStore('passwordOwners', () => {
     const encryptedEmail = EncryptionService.encrypt(email);
     const encryptedPassword = EncryptionService.encrypt(password);
 
+    const syncId = crypto.randomUUID();
+
     await db.execute(
-      `INSERT INTO password_entries 
-       (owner_id, encrypted_site, encrypted_username, encrypted_email, encrypted_password) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [ownerId, encryptedSite, encryptedUsername, encryptedEmail, encryptedPassword]
+      `INSERT INTO password_entries
+       (owner_id, encrypted_site, encrypted_username, encrypted_email, encrypted_password, sync_id)
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [ownerId, encryptedSite, encryptedUsername, encryptedEmail, encryptedPassword, syncId]
     );
 
     // Reload entries if viewing this owner

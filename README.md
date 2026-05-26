@@ -38,7 +38,16 @@ Before you begin, ensure you have the following installed on your system:
 
 - **Tauri Plugins**: SQL, File System, Dialog
 - **Crypto-JS** - JavaScript library for encryption
-- **IndexedDB** - Browser-based database for additional storage
+- **IndexedDB** - Browser-based database for web fallback mode
+
+### Rust Crates (sync layer)
+
+- **ed25519-dalek** - Ed25519 keypair generation for vault identity
+- **aes-gcm** - AES-256-GCM encryption of the vault private key
+- **pbkdf2 / sha2** - Key derivation from master password (100k iterations)
+- **bs58** - Base58 encoding of the vault public key (the "sync code")
+- **iroh** - QUIC-based P2P networking (hole-punching + relay fallback)
+- **tokio** - Async runtime for the iroh accept loop
 
 ## Installation for Developers
 
@@ -101,10 +110,23 @@ npm run package
 
 ## Usage
 
-1. Launch the Password Vault application.
-2. Create a strong master password (minimum 12 characters recommended).
-3. Set up security questions for password recovery.
-4. Start adding and managing your passwords securely.
+1. Launch the application. On first run choose **New Vault** or **Join Existing Vault**.
+   - **New Vault** — creates a fresh vault and generates a Sync Code. Save the Sync Code; you will need it to add other devices.
+   - **Join Existing Vault** — enter the Sync Code from your original device and the same master password. Your vault data will appear after both devices are online together (Sprint 4+).
+2. Create a strong master password (minimum 12 characters, includes uppercase, numbers, and symbols).
+3. Set up a security question for password recovery.
+4. Start adding and managing your passwords.
+
+Your Sync Code is always visible in **Device Sync → Your Sync Code**.
+
+### Pairing a Second Device
+
+Once both devices are running, open **Device Sync → Add Device** on both:
+
+1. On **Device A** — copy your Connection Ticket.
+2. On **Device B** — paste Device A's ticket into the "Enter the other device's ticket" field and click **Connect**.
+3. Both devices now appear in each other's **Connected Devices** list and begin syncing automatically.
+4. Pairings persist across restarts. On next launch, devices on the same LAN reconnect automatically via mDNS without re-entering tickets.
 
 ## Contributing
 

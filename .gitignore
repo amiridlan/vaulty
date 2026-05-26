@@ -15,7 +15,7 @@ dist-ssr
 
 # Tauri
 src-tauri/target
-src-tauri/Cargo.lock
+# Cargo.lock is intentionally committed for reproducible builds (binary app, not library)
 
 # Editor directories and files
 .vscode/*
@@ -104,3 +104,4 @@ screenshots/
 
 # Development reset script (optional - keep if needed for dev)
 scripts/reset-db.js
+

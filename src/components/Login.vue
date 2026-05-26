@@ -191,7 +191,13 @@ import { ref, onMounted, computed } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { SecurityUtils } from '../utils/security';
 import { SecurityQuestionService, SECURITY_QUESTIONS } from '../services/securityQuestions';
+import { VaultIdentityService } from '../services/vaultIdentity';
 import ForgotPasswordModal from './ForgotPasswordModal.vue';
+
+const emit = defineEmits<{
+  'vault-created': [vaultPublicKey: string];
+  'authenticated': [];
+}>();
 
 const authStore = useAuthStore();
 
@@ -261,11 +267,17 @@ async function handleSubmit() {
         selectedQuestionId.value as number,
         securityAnswer.value
       );
+
+      // Generate vault keypair and store encrypted in SQLite
+      const vaultPublicKey = await VaultIdentityService.generateAndStore(password.value);
+      emit('vault-created', vaultPublicKey);
     } else {
       // Login mode: verify master password
       const success = await authStore.login(password.value);
-      
-      if (!success) {
+
+      if (success) {
+        emit('authenticated');
+      } else {
         error.value = 'Incorrect master password';
         password.value = '';
       }

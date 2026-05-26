@@ -9,6 +9,7 @@ export interface PasswordOwner {
   id: number;
   name: string;
   encrypted_data: string;
+  sync_id: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -20,6 +21,7 @@ export interface PasswordEntry {
   encrypted_username: string;
   encrypted_email: string;
   encrypted_password: string;
+  sync_id: string | null;
   created_at: string;
   updated_at: string;
 }

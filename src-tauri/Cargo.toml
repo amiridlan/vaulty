@@ -21,3 +21,17 @@ tauri-plugin-fs = "2"
 tauri-plugin-dialog = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+# P2P sync — vault identity (Sprint 1)
+ed25519-dalek = { version = "2", features = ["rand_core"] }
+aes-gcm = "0.10"
+pbkdf2 = "0.12"
+sha2 = "0.10"
+rand = "0.8"
+hex = "0.4"
+bs58 = "0.5"
+
+# P2P sync — networking (Sprint 3)
+iroh = { version = "0.35", features = ["discovery-local-network"] }
+tokio = { version = "1", features = ["sync"] }
+anyhow = "1"
