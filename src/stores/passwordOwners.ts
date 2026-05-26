@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { getDatabase } from '../services/database';
 import { EncryptionService } from '../services/encryption';
-import type { PasswordOwner, PasswordEntry, DecryptedPasswordEntry } from '../types';
+import type { PasswordOwner, PasswordEntry, DecryptedPasswordEntry, ExtraField } from '../types';
 
 export const usePasswordOwnersStore = defineStore('passwordOwners', () => {
   const owners = ref<PasswordOwner[]>([]);
@@ -70,16 +70,28 @@ export const usePasswordOwnersStore = defineStore('passwordOwners', () => {
 
     // Decrypt all entries
   passwordEntries.value = await Promise.all(
-    entries.map(async (entry: PasswordEntry) => ({
-      id: entry.id,
-      owner_id: entry.owner_id,
-      site: await EncryptionService.decrypt(entry.encrypted_site),
-      username: await EncryptionService.decrypt(entry.encrypted_username),
-      email: await EncryptionService.decrypt(entry.encrypted_email),
-      password: await EncryptionService.decrypt(entry.encrypted_password),
-      created_at: entry.created_at,
-      updated_at: entry.updated_at,
-    }))
+    entries.map(async (entry: PasswordEntry) => {
+      let extra_fields: ExtraField[] = [];
+      if (entry.encrypted_extra_fields) {
+        try {
+          const raw = await EncryptionService.decrypt(entry.encrypted_extra_fields);
+          extra_fields = JSON.parse(raw);
+        } catch {
+          extra_fields = [];
+        }
+      }
+      return {
+        id: entry.id,
+        owner_id: entry.owner_id,
+        site: await EncryptionService.decrypt(entry.encrypted_site),
+        username: await EncryptionService.decrypt(entry.encrypted_username),
+        email: await EncryptionService.decrypt(entry.encrypted_email),
+        password: await EncryptionService.decrypt(entry.encrypted_password),
+        extra_fields,
+        created_at: entry.created_at,
+        updated_at: entry.updated_at,
+      };
+    })
   );
   }
 
@@ -89,59 +101,62 @@ export const usePasswordOwnersStore = defineStore('passwordOwners', () => {
     site: string,
     username: string,
     email: string,
-    password: string
+    password: string,
+    extraFields: ExtraField[] = []
   ): Promise<void> {
     const db = await getDatabase();
 
-    // Encrypt all fields
     const encryptedSite = EncryptionService.encrypt(site);
     const encryptedUsername = EncryptionService.encrypt(username);
     const encryptedEmail = EncryptionService.encrypt(email);
     const encryptedPassword = EncryptionService.encrypt(password);
-
+    const encryptedExtraFields = extraFields.length > 0
+      ? EncryptionService.encrypt(JSON.stringify(extraFields))
+      : null;
     const syncId = crypto.randomUUID();
 
     await db.execute(
       `INSERT INTO password_entries
-       (owner_id, encrypted_site, encrypted_username, encrypted_email, encrypted_password, sync_id)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [ownerId, encryptedSite, encryptedUsername, encryptedEmail, encryptedPassword, syncId]
+       (owner_id, encrypted_site, encrypted_username, encrypted_email, encrypted_password, encrypted_extra_fields, sync_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [ownerId, encryptedSite, encryptedUsername, encryptedEmail, encryptedPassword, encryptedExtraFields, syncId]
     );
 
-    // Reload entries if viewing this owner
     if (currentOwnerId.value === ownerId) {
       await loadPasswordEntries(ownerId);
     }
   }
 
   async function updatePasswordEntry(
-  entryId: number,
-  site: string,
-  username: string,
-  email: string,
-  password: string
-): Promise<void> {
-  const db = await getDatabase();
+    entryId: number,
+    site: string,
+    username: string,
+    email: string,
+    password: string,
+    extraFields: ExtraField[] = []
+  ): Promise<void> {
+    const db = await getDatabase();
 
-  // Encrypt all fields
-  const encryptedSite = await EncryptionService.encrypt(site);
-  const encryptedUsername = await EncryptionService.encrypt(username);
-  const encryptedEmail = await EncryptionService.encrypt(email);
-  const encryptedPassword = await EncryptionService.encrypt(password);
+    const encryptedSite = EncryptionService.encrypt(site);
+    const encryptedUsername = EncryptionService.encrypt(username);
+    const encryptedEmail = EncryptionService.encrypt(email);
+    const encryptedPassword = EncryptionService.encrypt(password);
+    const encryptedExtraFields = extraFields.length > 0
+      ? EncryptionService.encrypt(JSON.stringify(extraFields))
+      : null;
 
-  await db.execute(
-    `UPDATE password_entries 
-     SET encrypted_site = ?, encrypted_username = ?, encrypted_email = ?, 
-         encrypted_password = ?, updated_at = CURRENT_TIMESTAMP
-     WHERE id = ?`,
-    [encryptedSite, encryptedUsername, encryptedEmail, encryptedPassword, entryId]
-  );
+    await db.execute(
+      `UPDATE password_entries
+       SET encrypted_site = ?, encrypted_username = ?, encrypted_email = ?,
+           encrypted_password = ?, encrypted_extra_fields = ?, updated_at = CURRENT_TIMESTAMP
+       WHERE id = ?`,
+      [encryptedSite, encryptedUsername, encryptedEmail, encryptedPassword, encryptedExtraFields, entryId]
+    );
 
-  // Reload entries
-  if (currentOwnerId.value !== null) {
-    await loadPasswordEntries(currentOwnerId.value);
+    if (currentOwnerId.value !== null) {
+      await loadPasswordEntries(currentOwnerId.value);
+    }
   }
-}
 
   // Delete a password entry
   async function deletePasswordEntry(entryId: number): Promise<void> {

@@ -124,14 +124,15 @@ export async function mergeSyncPayload(raw: string): Promise<MergeResult> {
     if (existing.length === 0) {
       await db.execute(
         `INSERT INTO password_entries
-         (owner_id, encrypted_site, encrypted_username, encrypted_email, encrypted_password, sync_id, created_at, updated_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+         (owner_id, encrypted_site, encrypted_username, encrypted_email, encrypted_password, encrypted_extra_fields, sync_id, created_at, updated_at)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           localOwnerId,
           remote.encrypted_site,
           remote.encrypted_username,
           remote.encrypted_email,
           remote.encrypted_password,
+          remote.encrypted_extra_fields ?? null,
           remote.sync_id,
           remote.created_at,
           remote.updated_at,
@@ -142,7 +143,7 @@ export async function mergeSyncPayload(raw: string): Promise<MergeResult> {
       await db.execute(
         `UPDATE password_entries
          SET owner_id = ?, encrypted_site = ?, encrypted_username = ?,
-             encrypted_email = ?, encrypted_password = ?, updated_at = ?
+             encrypted_email = ?, encrypted_password = ?, encrypted_extra_fields = ?, updated_at = ?
          WHERE sync_id = ?`,
         [
           localOwnerId,
@@ -150,6 +151,7 @@ export async function mergeSyncPayload(raw: string): Promise<MergeResult> {
           remote.encrypted_username,
           remote.encrypted_email,
           remote.encrypted_password,
+          remote.encrypted_extra_fields ?? null,
           remote.updated_at,
           remote.sync_id,
         ],

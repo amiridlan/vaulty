@@ -130,6 +130,80 @@
             >
               Generate Strong Password
             </button>
+
+            <!-- Extra fields -->
+            <div class="space-y-2">
+              <div class="flex items-center justify-between">
+                <label class="text-sm font-medium text-foreground">Extra Fields</label>
+                <span class="text-xs text-muted-foreground">Secret words, recovery keys, PINs…</span>
+              </div>
+
+              <div v-for="(field, index) in formData.extraFields" :key="index" class="flex items-center gap-2">
+                <input
+                  v-model="field.label"
+                  type="text"
+                  placeholder="Label"
+                  class="flex h-9 w-32 shrink-0 rounded-md border border-input bg-background px-3 py-1 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                />
+                <div class="relative flex-1">
+                  <input
+                    v-model="field.value"
+                    :type="revealedFormFields.has(index) ? 'text' : 'password'"
+                    placeholder="Value"
+                    class="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 pr-8 text-sm text-foreground font-mono placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  />
+                  <button
+                    type="button"
+                    @click="toggleFormFieldReveal(index)"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <Eye v-if="!revealedFormFields.has(index)" :size="14" :stroke-width="2.5" />
+                    <EyeOff v-else :size="14" :stroke-width="2.5" />
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  @click="removeExtraField(index)"
+                  class="text-muted-foreground hover:text-destructive transition-colors shrink-0"
+                  title="Remove field"
+                >
+                  <X :size="16" :stroke-width="2.5" />
+                </button>
+              </div>
+
+              <!-- Add field button + suggestions -->
+              <div class="relative">
+                <button
+                  type="button"
+                  @click="showSuggestions = !showSuggestions"
+                  class="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors"
+                >
+                  <Plus :size="14" :stroke-width="2.5" />
+                  Add field
+                </button>
+                <div
+                  v-if="showSuggestions"
+                  class="mt-2 flex flex-wrap gap-1.5"
+                >
+                  <button
+                    v-for="label in SUGGESTED_LABELS"
+                    :key="label"
+                    type="button"
+                    @click="addExtraField(label)"
+                    class="rounded-full border border-border bg-muted px-3 py-1 text-xs text-foreground hover:bg-accent transition-colors"
+                  >
+                    {{ label }}
+                  </button>
+                  <button
+                    type="button"
+                    @click="addExtraField('')"
+                    class="rounded-full border border-primary/40 bg-primary/5 px-3 py-1 text-xs text-primary hover:bg-primary/10 transition-colors"
+                  >
+                    Custom…
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div v-if="error" class="mt-4 rounded-lg border border-destructive/50 bg-destructive/10 p-4">
@@ -162,9 +236,11 @@ import { ref, computed } from 'vue';
 import { usePasswordOwnersStore } from '../stores/passwordOwners';
 import PasswordEntry from './PasswordEntry.vue';
 import ConfirmationModal from './ConfirmationModal.vue';
-import type { DecryptedPasswordEntry } from '../types';
+import type { DecryptedPasswordEntry, ExtraField } from '../types';
 import { SecurityUtils } from '../utils/security';
-import { Eye, EyeOff } from 'lucide-vue-next';
+import { Eye, EyeOff, Plus, X } from 'lucide-vue-next';
+
+const SUGGESTED_LABELS = ['Secret word', 'Recovery key', 'Backup code', 'PIN', 'API key', 'Security phrase', 'Note'];
 
 const store = usePasswordOwnersStore();
 
@@ -178,12 +254,41 @@ const error = ref('');
 const showDeleteConfirm = ref(false);
 const pendingDeleteId = ref<number | null>(null);
 
-const formData = ref({
+const formData = ref<{
+  site: string;
+  username: string;
+  email: string;
+  password: string;
+  extraFields: ExtraField[];
+}>({
   site: '',
   username: '',
   email: '',
-  password: ''
+  password: '',
+  extraFields: [],
 });
+
+// Extra field UI state
+const revealedFormFields = ref<Set<number>>(new Set());
+const showSuggestions = ref(false);
+
+function addExtraField(label: string) {
+  formData.value.extraFields.push({ label, value: '' });
+  showSuggestions.value = false;
+}
+
+function removeExtraField(index: number) {
+  formData.value.extraFields.splice(index, 1);
+  const next = new Set(revealedFormFields.value);
+  next.delete(index);
+  revealedFormFields.value = next;
+}
+
+function toggleFormFieldReveal(index: number) {
+  const next = new Set(revealedFormFields.value);
+  if (next.has(index)) next.delete(index); else next.add(index);
+  revealedFormFields.value = next;
+}
 
 const editingEntryId = ref<number | null>(null);
 
@@ -214,7 +319,8 @@ async function handleAddEntry() {
       formData.value.site,
       formData.value.username,
       formData.value.email,
-      formData.value.password
+      formData.value.password,
+      formData.value.extraFields,
     );
 
     closeModal();
@@ -229,8 +335,11 @@ function handleEdit(entry: DecryptedPasswordEntry) {
     site: entry.site,
     username: entry.username,
     email: entry.email,
-    password: entry.password
+    password: entry.password,
+    extraFields: entry.extra_fields.map(f => ({ ...f })),
   };
+  revealedFormFields.value = new Set();
+  showSuggestions.value = false;
   showEditModal.value = true;
 }
 
@@ -248,7 +357,8 @@ async function handleUpdateEntry() {
       formData.value.site,
       formData.value.username,
       formData.value.email,
-      formData.value.password
+      formData.value.password,
+      formData.value.extraFields,
     );
 
     closeModal();
@@ -286,11 +396,14 @@ function closeModal() {
   showPasswordInput.value = false;
   editingEntryId.value = null;
   error.value = '';
+  showSuggestions.value = false;
+  revealedFormFields.value = new Set();
   formData.value = {
     site: '',
     username: '',
     email: '',
-    password: ''
+    password: '',
+    extraFields: [],
   };
 }
 </script>

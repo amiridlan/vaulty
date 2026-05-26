@@ -14,6 +14,11 @@ export interface PasswordOwner {
   updated_at: string;
 }
 
+export interface ExtraField {
+  label: string;
+  value: string;
+}
+
 export interface PasswordEntry {
   id: number;
   owner_id: number;
@@ -21,6 +26,7 @@ export interface PasswordEntry {
   encrypted_username: string;
   encrypted_email: string;
   encrypted_password: string;
+  encrypted_extra_fields: string | null;
   sync_id: string | null;
   created_at: string;
   updated_at: string;
@@ -33,6 +39,7 @@ export interface DecryptedPasswordEntry {
   username: string;
   email: string;
   password: string;
+  extra_fields: ExtraField[];
   created_at: string;
   updated_at: string;
 }

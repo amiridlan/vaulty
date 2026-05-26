@@ -69,6 +69,9 @@ async function createTables() {
   try { await db.execute('ALTER TABLE password_owners ADD COLUMN sync_id TEXT'); } catch { /* already added */ }
   try { await db.execute('ALTER TABLE password_entries ADD COLUMN sync_id TEXT'); } catch { /* already added */ }
 
+  // Extra fields migration — encrypted JSON blob for arbitrary key-value fields per entry
+  try { await db.execute('ALTER TABLE password_entries ADD COLUMN encrypted_extra_fields TEXT'); } catch { /* already added */ }
+
   // Backfill sync_id for any rows that don't have one yet
   await db.execute(`UPDATE password_owners SET sync_id = lower(hex(randomblob(16))) WHERE sync_id IS NULL`);
   await db.execute(`UPDATE password_entries SET sync_id = lower(hex(randomblob(16))) WHERE sync_id IS NULL`);

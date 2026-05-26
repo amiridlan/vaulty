@@ -19,6 +19,39 @@
             <span v-if="!showDetails" class="text-sm text-foreground">••••••••</span>
             <span v-else class="text-sm text-foreground font-mono">{{ entry.password }}</span>
           </div>
+
+          <!-- Extra fields -->
+          <template v-if="entry.extra_fields.length > 0">
+            <div class="border-t border-border my-2" />
+            <div
+              v-for="(field, index) in entry.extra_fields"
+              :key="index"
+              class="flex items-center gap-2"
+            >
+              <span class="text-sm text-muted-foreground font-medium shrink-0">{{ field.label }}:</span>
+              <span class="text-sm text-foreground font-mono">
+                {{ revealedExtraFields.has(index) ? field.value : '••••••••' }}
+              </span>
+              <button
+                type="button"
+                @click="toggleExtraField(index)"
+                class="text-muted-foreground hover:text-foreground transition-colors"
+                :title="revealedExtraFields.has(index) ? 'Hide' : 'Reveal'"
+              >
+                <Eye v-if="!revealedExtraFields.has(index)" :size="14" :stroke-width="2.5" />
+                <EyeOff v-else :size="14" :stroke-width="2.5" />
+              </button>
+              <button
+                type="button"
+                @click="copyExtraField(field.value, index)"
+                class="text-muted-foreground hover:text-foreground transition-colors"
+                title="Copy"
+              >
+                <Check v-if="copiedFieldIndex === index" :size="14" class="text-green-500" />
+                <Copy v-else :size="14" :stroke-width="2.5" />
+              </button>
+            </div>
+          </template>
         </div>
       </div>
 
@@ -76,8 +109,7 @@
 import { ref } from 'vue';
 import type { DecryptedPasswordEntry } from '../types';
 import { SecurityUtils } from '../utils/security';
-import { Eye, EyeOff, Pencil, Copy, Trash2 } from 'lucide-vue-next';
-
+import { Eye, EyeOff, Pencil, Copy, Trash2, Check } from 'lucide-vue-next';
 
 const props = defineProps<{
   entry: DecryptedPasswordEntry
@@ -90,29 +122,40 @@ defineEmits<{
 
 const showDetails = ref(false);
 const showCopyNotification = ref(false);
+const revealedExtraFields = ref<Set<number>>(new Set());
+const copiedFieldIndex = ref<number | null>(null);
 
 function toggleDetails() {
   showDetails.value = !showDetails.value;
+}
+
+function toggleExtraField(index: number) {
+  const next = new Set(revealedExtraFields.value);
+  if (next.has(index)) next.delete(index); else next.add(index);
+  revealedExtraFields.value = next;
+}
+
+async function copyExtraField(value: string, index: number) {
+  try {
+    await navigator.clipboard.writeText(value);
+    SecurityUtils.clearClipboardAfter(30);
+    copiedFieldIndex.value = index;
+    setTimeout(() => (copiedFieldIndex.value = null), 2000);
+  } catch { /* ignore */ }
 }
 
 async function handleCopyPassword() {
   try {
     await navigator.clipboard.writeText(props.entry.password);
     showCopyNotification.value = true;
-    
-    // Clear clipboard after 30 seconds for security
     SecurityUtils.clearClipboardAfter(30);
-    
-    setTimeout(() => {
-      showCopyNotification.value = false;
-    }, 2000);
+    setTimeout(() => { showCopyNotification.value = false; }, 2000);
   } catch (err) {
     console.error('Failed to copy password:', err);
   }
 }
 
 function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleString();
+  return new Date(dateString).toLocaleString();
 }
 </script>
