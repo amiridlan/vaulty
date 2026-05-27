@@ -67,10 +67,18 @@
 
     <!-- Footer -->
     <footer class="bg-card border-t border-border mt-auto">
-      <div class="w-full px-4 sm:px-6 lg:px-8 py-4">
-        <p class="text-center text-xs sm:text-sm text-muted-foreground">
+      <div class="w-full px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+        <p class="text-xs sm:text-sm text-muted-foreground">
           🔒 All data is encrypted locally. No internet connection required.
         </p>
+        <button
+          v-if="isDesktop"
+          @click="manualCheckUpdate"
+          :disabled="isCheckingUpdate"
+          class="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+        >
+          {{ checkUpdateLabel }}
+        </button>
       </div>
     </footer>
 
@@ -110,6 +118,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '../stores/auth';
+import { useUpdaterStore } from '../stores/updater';
+import { isDesktopApp } from '../utils/tauri';
 import { APP_VERSION } from '../version';
 import { usePasswordOwnersStore } from '../stores/passwordOwners';
 import PasswordOwners from './PasswordOwners.vue';
@@ -120,8 +130,29 @@ import { ArrowLeftRight, X } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const passwordStore = usePasswordOwnersStore();
+const updaterStore = useUpdaterStore();
 
 const appVersion = APP_VERSION;
+const isDesktop = isDesktopApp();
+const isCheckingUpdate = ref(false);
+const upToDate = ref(false);
+
+const checkUpdateLabel = computed(() => {
+  if (isCheckingUpdate.value) return 'Checking…';
+  if (upToDate.value) return 'Up to date';
+  return 'Check for Updates';
+});
+
+async function manualCheckUpdate() {
+  isCheckingUpdate.value = true;
+  upToDate.value = false;
+  await updaterStore.checkForUpdate();
+  isCheckingUpdate.value = false;
+  if (!updaterStore.updateAvailable) {
+    upToDate.value = true;
+    setTimeout(() => { upToDate.value = false; }, 3000);
+  }
+}
 
 const viewState = ref<'owners' | 'passwords'>('owners');
 const timeRemaining = ref(180); // 3 minutes in seconds
