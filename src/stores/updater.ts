@@ -18,9 +18,11 @@ export const useUpdaterStore = defineStore('updater', () => {
 
   let pendingUpdate: Update | null = null;
 
-  async function checkForUpdate(): Promise<void> {
+  // silent: swallow errors (auto-check on login). verbose: surface errors (manual check).
+  async function checkForUpdate(verbose = false): Promise<void> {
     if (!isDesktopApp()) return;
     error.value = '';
+    if (verbose) dismissed.value = false;
     try {
       const update = await check();
       if (!update) return;
@@ -28,8 +30,8 @@ export const useUpdaterStore = defineStore('updater', () => {
       updateVersion.value = update.version;
       releaseNotes.value = update.body ?? '';
       updateAvailable.value = true;
-    } catch {
-      // Non-fatal: user may be offline or endpoint not yet configured.
+    } catch (e: any) {
+      if (verbose) error.value = e?.message ?? String(e);
     }
   }
 

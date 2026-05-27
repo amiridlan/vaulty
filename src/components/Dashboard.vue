@@ -71,14 +71,16 @@
         <p class="text-xs sm:text-sm text-muted-foreground">
           🔒 All data is encrypted locally. No internet connection required.
         </p>
-        <button
-          v-if="isDesktop"
-          @click="manualCheckUpdate"
-          :disabled="isCheckingUpdate"
-          class="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-        >
-          {{ checkUpdateLabel }}
-        </button>
+        <div v-if="isDesktop" class="flex items-center gap-2">
+          <span v-if="updaterStore.error" class="text-xs text-destructive">{{ updaterStore.error }}</span>
+          <button
+            @click="manualCheckUpdate"
+            :disabled="isCheckingUpdate"
+            class="text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+          >
+            {{ checkUpdateLabel }}
+          </button>
+        </div>
       </div>
     </footer>
 
@@ -146,9 +148,9 @@ const checkUpdateLabel = computed(() => {
 async function manualCheckUpdate() {
   isCheckingUpdate.value = true;
   upToDate.value = false;
-  await updaterStore.checkForUpdate();
+  await updaterStore.checkForUpdate(true);
   isCheckingUpdate.value = false;
-  if (!updaterStore.updateAvailable) {
+  if (!updaterStore.updateAvailable && !updaterStore.error) {
     upToDate.value = true;
     setTimeout(() => { upToDate.value = false; }, 3000);
   }
