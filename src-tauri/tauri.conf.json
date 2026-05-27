@@ -62,7 +62,7 @@
       ]
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEY1NkM1ODg5RUJCNUExNjYKUldSbW9iWHJpVmhzOVlWVC9UVXdGbmdNU0FOdVpkcWRua2JSVW9kUCswYWhlNit6YTJaSTVVNFEK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IENBMjMxRDAwRjNERTcwRDYKUldUV2NON3pBQjBqeXBGaVVHeVJNU2t2cTZLNGJBRS8zQjNGSFNabVZyYS80dXc2VnZXbllIbXEK",
       "endpoints": [
         "https://github.com/amiridlan/vaulty/releases/latest/download/latest.json"
       ]
