@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "vaulty",
-  "version": "1.6.8",
+  "version": "1.6.9",
   "identifier": "com.passwordvault.app",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -62,7 +62,7 @@
       ]
     },
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEU1MDFGNDIyNDBFMUQ1OTAKUldTUTFlRkFJdlFCNVRJNmo4blJIeElZUjhnYzhuUWw2SkF2L202SGh6ZGNMckhoT1pZZGFJS04K",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI5NkFBREEzMTYzMTM2OTgKUldTWU5qRVdvNjFxS2JUUHM3cjBHYTUzdkRwTThJOGxkTzV1TVFIWUFYOHIwS1RuaXdDY2ExMTcK",
       "endpoints": [
         "https://github.com/amiridlan/vaulty/releases/latest/download/latest.json"
       ]

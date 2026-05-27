@@ -53,10 +53,18 @@ jobs:
 
       - run: npm ci
 
+      - name: Write signing key to file
+        shell: pwsh
+        env:
+          KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          $bytes = [Convert]::FromBase64String($env:KEY)
+          [IO.File]::WriteAllBytes("signing.key", $bytes)
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ github.workspace }}/signing.key
           TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
           # ── macOS code signing & notarization (optional) ───────────────────
           # Fill in GitHub secrets and uncomment these to notarize macOS builds.
