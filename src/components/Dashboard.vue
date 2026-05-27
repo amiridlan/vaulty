@@ -4,11 +4,12 @@
     <header class="bg-card shadow-sm border-b border-border">
       <div class="w-full px-4 sm:px-6 lg:px-8">
         <div class="flex flex-wrap sm:flex-nowrap justify-between items-center py-4 gap-4">
-          <div class="flex items-center">
+          <div class="flex items-center gap-2 sm:gap-3">
             <h1 class="text-xl sm:text-2xl font-bold text-foreground">Password Vault</h1>
-            <span class="ml-2 sm:ml-4 px-2 sm:px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20">
+            <span class="px-2 sm:px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 text-xs font-semibold rounded-full border border-green-500/20">
               Encrypted
             </span>
+            <span class="text-xs text-muted-foreground font-mono">v{{ appVersion }}</span>
           </div>
 
           <div class="flex items-center gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
@@ -109,6 +110,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useAuthStore } from '../stores/auth';
+import { APP_VERSION } from '../version';
 import { usePasswordOwnersStore } from '../stores/passwordOwners';
 import PasswordOwners from './PasswordOwners.vue';
 import PasswordList from './PasswordList.vue';
@@ -118,6 +120,8 @@ import { ArrowLeftRight, X } from 'lucide-vue-next';
 
 const authStore = useAuthStore();
 const passwordStore = usePasswordOwnersStore();
+
+const appVersion = APP_VERSION;
 
 const viewState = ref<'owners' | 'passwords'>('owners');
 const timeRemaining = ref(180); // 3 minutes in seconds

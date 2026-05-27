@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, watch, onMounted } from 'vue';
 import { useAuthStore } from './stores/auth';
 import { useSyncStore } from './stores/sync';
 import { useUpdaterStore } from './stores/updater';
@@ -95,6 +95,15 @@ async function handleAuthenticated() {
   }, 2000);
   setTimeout(() => updaterStore.checkForUpdate(), 5000);
 }
+
+watch(
+  () => authStore.isAuthenticated,
+  (authenticated) => {
+    if (!authenticated && appView.value === 'dashboard') {
+      appView.value = 'login';
+    }
+  },
+);
 
 onMounted(() => {
   setTimeout(initialize, 100);

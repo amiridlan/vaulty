@@ -35,9 +35,13 @@ bumpJson(resolve(root, 'src-tauri/tauri.conf.json'), (cfg) => {
   cfg.version = newVersion;
 });
 
+const versionFilePath = resolve(root, 'src/version.ts');
+writeFileSync(versionFilePath, `export const APP_VERSION = '${newVersion}';\n`);
+console.log(`  ./src/version.ts: → ${newVersion}`);
+
 console.log('');
 console.log('Next steps:');
-console.log(`  git add package.json src-tauri/tauri.conf.json`);
+console.log(`  git add package.json src-tauri/tauri.conf.json src/version.ts`);
 console.log(`  git commit -m "chore: release v${newVersion}"`);
 console.log(`  git tag v${newVersion}`);
 console.log(`  git push && git push --tags`);
