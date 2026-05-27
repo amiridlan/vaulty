@@ -105,3 +105,5 @@ screenshots/
 # Development reset script (optional - keep if needed for dev)
 scripts/reset-db.js
 
+vaulty.key
+vaulty.key.pub
